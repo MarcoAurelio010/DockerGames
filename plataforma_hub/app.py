@@ -16,15 +16,18 @@ def index():
 
 @app.route('/deploy_flappy')
 def deploy_flappy():
-    # Cria o serviço no Swarm com 2 réplicas (conforme pág 5 do PDF)
-    # Isso garante o "Self-healing" e Alta Disponibilidade
-    client.services.create(
-        image="meuhub/jogo_flappybird:latest",
-        name="flappy-bird-service",
-        networks=["rede_swarm_hub"],
-        endpoint_spec=docker.types.EndpointSpec(ports={8085: 80}),
-        mode=docker.types.ServiceMode("replicated", replicas=2)
-    )
+    try:
+        client.services.create(
+            image="meuhub/jogo_flappybird:latest",
+            name="flappy-bird-service",
+            networks=["rede_swarm_hub"],
+            endpoint_spec=docker.types.EndpointSpec(ports={8085: 80}),
+            mode=docker.types.ServiceMode("replicated", replicas=2) # 2 réplicas para Alta Disponibilidade [cite: 67]
+        )
+    except Exception as e:
+        # Se o serviço já existir, ele apenas ignora o erro e redireciona
+        print(f"Aviso: O serviço já pode estar ativo. Erro: {e}")
+    
     return redirect('/')
 
 if __name__ == '__main__':

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>DockerGames | Hub PaaS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <h1 class="text-3xl font-bold mb-6 text-emerald-400">Dashboard do Cluster Swarm</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {% for node in nodes %}
+        <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+            <h3 class="font-bold">Nó: {{ node.attrs.Description.Hostname }}</h3>
+            <p class="text-sm text-slate-400">Status: {{ node.attrs.Status.State }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+        <h2 class="text-xl font-bold mb-4">Ações da Plataforma</h2>
+        <a href="/deploy_flappy" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded font-bold transition">
+            Provisionar Flappy Bird
+        </a>
+    </div>
+</body>
+</html>

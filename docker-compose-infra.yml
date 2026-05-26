@@ -1,19 +1,20 @@
 version: '3.8'
 services:
-  manager:
+  manager:        # Deve estar recuado (2 espaços)
     image: docker:dind
     container_name: manager
     privileged: true
     ports:
       - "8081:5000"
       - "8082:8080"
+      - "8085:8085"
     volumes:
       - .:/project
     networks:
       swarm-network:
         ipv4_address: 172.20.0.10
 
-  worker-1:
+  worker-1:       # Deve estar alinhado com o manager
     image: docker:dind
     container_name: worker-1
     privileged: true
@@ -21,7 +22,7 @@ services:
       swarm-network:
         ipv4_address: 172.20.0.11
 
-  worker-2:
+  worker-2:       # Deve estar alinhado com o manager
     image: docker:dind
     container_name: worker-2
     privileged: true
