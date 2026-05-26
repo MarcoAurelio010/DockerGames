@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  plataforma_hub:
+    image: meuhub/flask-platform:latest
+    ports:
+      - "8081:5000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - rede_swarm_hub
+
+  visualizer:
+    image: dockersamples/visualizer:latest
+    ports:
+      - "8082:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - rede_swarm_hub
+
+networks:
+  rede_swarm_hub:
+    external: true
