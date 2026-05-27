@@ -4,16 +4,19 @@ services:
   plataforma_hub:
     image: meuhub/flask-platform:latest
     ports:
-      - "5000:5000" # Roda na 5000 diretamente (o manager vai receber na 8081 e jogar aqui)
+      - "5000:5000" 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager] 
     networks:
       - rede_swarm_hub
 
   visualizer:
     image: dockersamples/visualizer:latest
     ports:
-      - "8080:8080" # Roda na 8080 diretamente (o manager vai receber na 8082 e jogar aqui)
+      - "8080:8080" 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
