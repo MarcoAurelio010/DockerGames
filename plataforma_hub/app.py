@@ -1,41 +1,31 @@
-import docker
-import time
 from flask import Flask, render_template, redirect
 
 app = Flask(__name__)
-client = docker.from_env()
+
+# Princípio Aberto/Fechado (OCP): Fácil expansão para novos jogos sem alterar a lógica
+JOGOS_DISPONIVEIS = {
+    "flappybird": {
+        "nome": "Flappy Bird",
+        "descricao": "Desvie dos obstáculos e faça a maior pontuação!",
+        "porta": 8085,
+        "cor_fundo": "bg-emerald-600",
+        "icone": "🐦"
+    }
+    # Exemplo para o futuro:
+    # "pacman": {"nome": "Pac-Man", "descricao": "Fuja dos fantasmas!", "porta": 8086, "cor_fundo": "bg-yellow-500", "icone": "👾"}
+}
 
 @app.route('/')
 def index():
-    nodes = client.nodes.list()
-    services = client.services.list()
-    return render_template('index.html', nodes=nodes, services=services)
+    return render_template('index.html', jogos=JOGOS_DISPONIVEIS)
 
-@app.route('/deploy_flappy')
-def deploy_flappy():
-    try:
-        # 1. Tenta remover o serviço antigo se ele existir
-        try:
-            servico = client.services.get("flappy-bird-service")
-            servico.remove()
-            time.sleep(2) 
-        except:
-            pass
-            
-        # 2. Criação do serviço com a sintaxe correta para portas
-        # O dicionário {8085: 80} mapeia Porta_do_Windows:Porta_do_Container
-        client.services.create(
-            image="meuhub/jogo_flappybird:latest",
-            name="flappy-bird-service",
-            networks=["rede_swarm_hub"],
-            endpoint_spec=docker.types.EndpointSpec(ports={8085: 80}),
-            mode=docker.types.ServiceMode("replicated", replicas=2),
-            constraints=["node.role == manager"]
-        )
-        return redirect('/')
-        
-    except Exception as e:
-        return f"<h1>Erro crítico ao provisionar:</h1><p>{str(e)}</p>"
+@app.route('/jogar/<id_jogo>')
+def jogar(id_jogo):
+    jogo = JOGOS_DISPONIVEIS.get(id_jogo)
+    if jogo:
+        # Redireciona diretamente para a porta do cluster onde o jogo já está a rodar
+        return redirect(f"http://localhost:{jogo['porta']}")
+    return "Jogo não encontrado na plataforma!", 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

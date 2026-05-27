@@ -2,26 +2,36 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>DockerGames | Hub PaaS</title>
+    <title>DockerGames</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white p-8">
-    <h1 class="text-3xl font-bold mb-6 text-emerald-400">Dashboard do Cluster Swarm</h1>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {% for node in nodes %}
-        <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
-            <h3 class="font-bold">Nó: {{ node.attrs.Description.Hostname }}</h3>
-            <p class="text-sm text-slate-400">Status: {{ node.attrs.Status.State }}</p>
-        </div>
-        {% endfor %}
-    </div>
+<body class="bg-gray-900 text-white min-h-screen p-8 font-sans">
+    <div class="max-w-6xl mx-auto">
+        
+        <header class="mb-12 text-center mt-10">
+            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-emerald-400 tracking-tight mb-4">
+                DockerGames | Hub de Jogos em Contêineres
+            </h1>
+            <p class="text-gray-400 text-lg">Selecione um jogo e inicie a sua partida instantaneamente.</p>
+        </header>
 
-    <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
-        <h2 class="text-xl font-bold mb-4">Ações da Plataforma</h2>
-        <a href="/deploy_flappy" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded font-bold transition">
-            Provisionar Flappy Bird
-        </a>
+        <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for id, jogo in jogos.items() %}
+            <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-700 hover:border-emerald-500 transition-all duration-300 hover:-translate-y-2">
+                <div class="h-32 {{ jogo.cor_fundo }} flex items-center justify-center text-6xl shadow-inner">
+                    {{ jogo.icone }}
+                </div>
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-2">{{ jogo.nome }}</h2>
+                    <p class="text-gray-400 text-sm mb-6 h-10">{{ jogo.descricao }}</p>
+                    <a href="/jogar/{{ id }}" class="block text-center bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded transition-colors w-full shadow-md">
+                        Jogar Agora
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+        
     </div>
 </body>
 </html>
